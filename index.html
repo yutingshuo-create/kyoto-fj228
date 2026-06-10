@@ -7,9 +7,66 @@
                        上架給女友前改成 false。
        SHEET_CSV_URL : 之後接 Google 試算表時，把發布的 CSV 連結貼進來。
                        留空字串就只用預先寫好的內容。
-     解鎖規則：每天「台灣時間早上 8:00」開新的一張。
+     解鎖規則：每天「台灣f��間早上 8:00」開新的一張。
      ============================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ---- 輪播控制 ---- */
+/* ---- 照片 HTML 建構（支援多張輪播） ---- */
+function buildPhotoHtml(photo, idx){
+  if(!photo || !photo.trim())
+    return '<div class="photo-ph">📷<span>今天的照片晚點補上</span></div>';
+  var imgs = photo.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  if(imgs.length === 1)
+    return '<img class="photo" src="' + imgs[0] + '" alt="">';
+  var cid = 'car-' + idx;
+  var strips = '';
+  for(var j=0;j<imgs.length;j++)
+    strips += '<img src="' + imgs[j] + '" alt="" loading="lazy">';
+  var nav = '';
+  if(imgs.length <= 4){
+    nav = '<div class="car-dots">';
+    for(var k=0;k<imgs.length;k++)
+      nav += '<span class="' + (k===0?'on':'') + '" onclick="carGo(\'' + cid + '\',' + k + ')"></span>';
+    nav += '</div>';
+  } else {
+    nav = '<div class="car-counter">1 / ' + imgs.length + '</div>';
+  }
+  return '<div class="carousel" id="' + cid + '" data-idx="0" data-len="' + imgs.length + '">'
+    + '<div class="car-strip">' + strips + '</div>'
+    + '<button class="car-arr prev" onclick="carStep(\'' + cid + '\',-1)">&#8249;</button>'
+    + '<button class="car-arr next" onclick="carStep(\'' + cid + '\',1)">&#8250;</button>'
+    + nav
+    + '</div>';
+}
+
+function carGo(id,idx){
+  const el=document.getElementById(id);if(!el)return;
+  const len=parseInt(el.dataset.len);
+  idx=Math.max(0,Math.min(len-1,idx));
+  el.querySelector('.car-strip').style.transform=`translateX(-${idx*100}%)`;
+  // 4張以上顯示數字，否則顯示點點
+  const counter=el.querySelector('.car-counter');
+  if(counter){ counter.textContent=`${idx+1} / ${len}`; }
+  else{ el.querySelectorAll('.car-dots span').forEach((d,i)=>d.classList.toggle('on',i===idx)); }
+  el.dataset.idx=String(idx);
+}
+function carStep(id,dir){
+  const el=document.getElementById(id);if(!el)return;
+  carGo(id,parseInt(el.dataset.idx)+dir);
+}
+function initCarouselSwipe(id){
+  const el=document.getElementById(id);if(!el)return;
+  let sx=0;
+  el.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+  el.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>40)carStep(id,dx<0?1:-1);
+  },{passive:true});
+}
+
 function toggleHowto(){
   const t = document.getElementById('howtoToggle');
   const b = document.getElementById('howtoBody');
@@ -149,6 +206,22 @@ function toggleHowto(){
     width:100%;height:130px;border:2px dashed #d6cbb4;border-radius:10px;margin-bottom:12px;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#b3a98f;font-size:13px;
   }
+  /* ── carousel ── */
+  .carousel{position:relative;overflow:hidden;border-radius:12px;background:#ede8e0;line-height:0;margin:12px 0;}
+  .car-stripxdisplay:flex;transition:transform .35s ease;}
+  .car-strip img{flex:0 0 100%;width:100%;max-height:290px;object-fit:cover;}
+  .car-dots{display:flex;justify-content:center;gap:7px;padding:8px 0 4px;line-height:1;}
+  .car-dots span{display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--slate2,#b8b0a4);cursor:pointer;transition:background .2s;}
+  .car-dots span.on{background:var(--teal2,#5b8083);}
+  .car-counter{text-align:center;font-size:12px;color:var(--slate1,#8a8078);
+    padding:6px 0 2px;letter-spacing:.05em;}
+  .car-arr{position:absolute;top:calc(50% - 16px);transform:translateY(-50%);
+    background:rgba(255,255,255,.6);border:none;cursor:pointer;
+    border-radius:50%;width:30px;height:30px;font-size:18px;line-height:1;
+    display:flex;align-items:center;justify-content:center;}
+  .car-arr.prev{left:6px;} .car-arr.next{right:6px;}
+  .car-arr:hover{background:rgba(255,255,255,.85);}
   .note{
     font-family:'Zhi Mang Xing','Caveat',cursive;font-size:21px;line-height:1.9;color:var(--teal);
     background:#fbf3e2;border:1px dashed var(--gold);border-radius:10px;padding:12px 14px;margin-bottom:8px;
@@ -212,6 +285,10 @@ function toggleHowto(){
   .howto-body li:last-child{border-bottom:none;}
   .howto-body li .em{flex:0 0 22px;text-align:center;font-size:15px;}
   footer{text-align:center;color:#b3a98f;font-size:11px;margin-top:26px;font-family:'JetBrains Mono';letter-spacing:1px;}
+  /* ─── 每日地圖 ─── */
+  .day-map{height:220px;border-radius:10px;overflow:hidden;margin:10px 0 4px;background:#ede8e0;}
+  .day-map .leaflet-control-attribution{display:none;}
+  .leaflet-tile-pane{filter:saturate(.85) brightness(1.05);}
 </style>
 
 <div class="wrap">
@@ -316,9 +393,9 @@ const DAYS = [
     note:"抽了一支水占籤，內容晚上電話跟妳說。", photo:"",
     full:["08:30 叡山電車一日券出發","09:40 ひろ文 流水素麵","12:00 貴船神社 水占卜","13:20 鞍馬纜車→鞍馬寺","14:30 木の根道・奧之院","16:00 叡電回出町柳","17:30 晚餐 空蟬亭（極難訂）"] },
 
-  { d:9,  wd:"四", route:"京都 東山一日", title:"清水寺・祇園",
+  { d:9,  wd:"四", route:"京都 東山一日", title:"清水寺ヷ祇園",
     spots:["清水寺（世界遺產）","三年坂・二年坂","八坂塔・八坂神社","花見小路"],
-    hl:"傍晚花見小路燈籠亮起，最有京都味的時刻。",
+    hl:"傍晚花見小路燈籠亮起，最有京都e��的時刻。",
     dinner:"燒肉飛鳥（和牛）", by:"阿說",
     note:"走在二年坂的時候想，以後一定要牽著妳走一次。", photo:"",
     full:["07:30 Inoda 咖啡 京之朝食","茶碗坂 → 清水寺","清水坂・產寧坂・二年坂","法觀寺 八坂塔","八坂神社","茶寮都路里 抹茶","傍晚 花見小路","17:30 晚餐 燒肉飛鳥"] },
@@ -358,6 +435,67 @@ function buildSim(){
 }
 
 const COLORS=["c1","c2","c3","c4"];
+
+/* ─── 各日路線座標 [lat, lng, "名稱"] ─── */
+const DAY_WAYPOINTS = {
+  2:  [[34.4341,135.2440,"關西機場"],[34.9858,135.7587,"京都駅"],[34.9878,135.7543,"Rihga Gran Kyoto"]],
+  3:  [[34.9858,135.7587,"京都取車"],[35.5461,135.1838,"天橋立"],[35.6816,135.2901,"向井酒造"],[35.6855,135.2923,"伊根灣遊覽船"],[35.6938,135.2919,"舟屋展望台"]],
+  4:  [[35.6855,135.2923,"伊根"],[35.5461,135.1838,"天橋立 View Land"],[35.4969,135.1896,"由良川鐵橋"],[35.4677,135.3693,"五老岳公園"],[35.4720,135.3700,"舞鶴住宿"]],
+  5:  [[35.3706,135.5895,"美山茅葺之里"],[35.3696,135.9868,"白鬚神社"],[35.3866,136.0723,"水杉林蔭大道"],[35.3722,136.2682,"長濱黑壁廣場"],[35.2762,136.2605,"彥根住宿"]],
+  6:  [[35.2758,136.2607,"彥根城"],[35.1355,136.1001,"日牟禮八幡宮"],[35.1210,136.1067,"La Collina"],[35.1324,136.0993,"八幡堀"],[35.0100,135.8683,"大津住宿"]],
+  7:  [[35.0286,135.8482,"近江神宮"],[35.0603,135.8409,"比叡山頂"],[35.0600,135.8410,"延曆寺"],[35.1180,135.7665,"三千院"],[35.1205,135.7604,"寂光院"],[34.9858,135.7587,"回京都"]],
+  8:  [[35.0363,135.7754,"出町柳"],[35.1261,135.7589,"ひろ文流水素麵"],[35.1235,135.7560,"貴船神社"],[35.1267,135.7665,"鞍馬寺"],[35.1280,135.7700,"木の根道"]],
+  9:  [[35.0073,135.7624,"Inoda 咖啡"],[34.9949,135.7851,"清水寺"],[34.9990,135.7836,"二年坂"],[35.0026,135.7810,"八坂塔"],[35.0036,135.7780,"八坂神社"],[35.0040,135.7750,"花見小路"]],
+  10: [[34.8882,135.7997,"中村藤吉・宇治"],[34.8884,135.8077,"平等院"],[35.0043,135.7661,"錦市場"],[35.0113,135.7923,"南禪寺"],[35.0097,135.7729,"先斗町"]],
+  11: [[34.9858,135.7587,"京都駅"],[34.4341,135.2440,"關西機場"]]
+};
+
+/* ─── 初始化地圖（在 card 打開後呼叫）─── */
+function initDayMap(mapId, waypoints){
+  if(!window.L || !waypoints || !waypoints.length) return;
+  const el = document.getElementById(mapId);
+  if(!el || el._mapReady) return;
+  el._mapReady = true;
+
+  const latLngs = waypoints.map(w=>[w[0],w[1]]);
+  const map = L.map(mapId, {
+    zoomControl:false, attributionControl:false,
+    scrollWheelZoom:false, dragging:true, touchZoom:true
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    {subdomains:'abcd'}).addTo(map);
+
+  // 路線折線
+  L.polyline(latLngs,{color:'#5b8083',weight:3,opacity:.85,dashArray:'6,4'}).addTo(map);
+
+  // 景點數字標記
+  waypoints.forEach((w,i)=>{
+    const ic = L.divIcon({
+      html:'<div style="background:#5b8083;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);line-height:1">'+(i+1)+'</div>',
+      className:'', iconSize:[22,22], iconAnchor:[11,11]
+    });
+    L.marker([w[0],w[1]],{icon:ic})
+      .bindTooltip(w[2],{permanent:false,direction:'top',className:'lf-tip'})
+      .addTo(map);
+  });
+
+  map.fitBounds(L.latLngBounds(latLngs),{padding:[18,18]});
+
+  // 橘色動畫旅人
+  const tic = L.divIcon({
+    html:'<div style="background:#e8734a;border-radius:50%;width:13px;height:13px;border:3px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.4)"></div>',
+    className:'', iconSize:[13,13], iconAnchor:[6,6]
+  });
+  const traveler = L.marker(latLngs[0],{icon:tic,zIndexOffset:999}).addTo(map);
+  let step=0;
+  const go=()=>{
+    if(step>=latLngs.length) return;
+    traveler.setLatLng(latLngs[step]); step++;
+    if(step<latLngs.length) setTimeout(go,900);
+  };
+  setTimeout(go,700);
+}
+
 function render(){
   const now = nowMs();
   // 找出目前「最新已解鎖」的日子 = 今天
@@ -398,12 +536,11 @@ function render(){
 
     if(unlocked){
       const panel=document.createElement('div');panel.className='panel';
-      const photoHtml = dy.photo
-        ? `<img class="photo" src="${dy.photo}" alt="">`
-        : `<div class="photo-ph">📷<span>今天的照片晚點補上</span></div>`;
+      const photoHtml = buildPhotoHtml(dy.photo, i);
       panel.innerHTML = `
         <div class="panel-inner">
           <div class="spots">${dy.spots.map(s=>`<span>${s}</span>`).join('')}</div>
+          <div id="map-${i}" class="day-map"></div>
           <div class="hl">${dy.hl}</div>
           ${photoHtml}
           <div class="note">${dy.note}<span class="by">— ${dy.by}</span></div>
@@ -416,11 +553,13 @@ function render(){
           </div>
         </div>`;
       card.appendChild(panel);
+      // 初始化輪播觸控滑動
+      panel.querySelectorAll('.carousel').forEach(el=>initCarouselSwipe(el.id));
 
       head.addEventListener('click',()=>{
         const open=panel.classList.toggle('open');
         head.querySelector('.chev').textContent=open?'⌃':'⌄';
-        if(open){const inner=panel.querySelector('.panel-inner');inner.classList.remove('reveal');void inner.offsetWidth;inner.classList.add('reveal');}
+        if(open){const inner=panel.querySelector('.panel-inner');inner.classList.remove('reveal');void inner.offsetWidth;inner.classList.add('reveal');setTimeout(()=>initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]),80);}
       });
       const moreBtn=panel.querySelector('.more-btn');
       const full=panel.querySelector('.full');
@@ -428,16 +567,16 @@ function render(){
 
       if(isToday){ // 今天自動展開
         panel.classList.add('open');head.querySelector('.chev').textContent='⌃';
-        setTimeout(()=>{const inner=panel.querySelector('.panel-inner');inner.classList.add('reveal');},80);
+        setTimeout(()=>{const inner=panel.querySelector('.panel-inner');inner.classList.add('reveal');initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]);},80);
       }
-    } else {
+      else {
       head.addEventListener('click',()=>{card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),420);});
     }
     root.appendChild(card);
   });
 }
 
-/* ---- 選配：讀 Google 試算表覆蓋 note / photo ---- */
+/* ---- 選配：讀 Google 表覆蓋 note / photo ---- */
 async function loadSheet(){
   if(!SHEET_CSV_URL) return;
   try{
