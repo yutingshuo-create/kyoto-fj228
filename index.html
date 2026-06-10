@@ -401,4 +401,47 @@ async function loadSheet(){
       if(day){ if(r.note&&r.note.trim())day.note=r.note.trim(); if(r.photo&&r.photo.trim())day.photo=r.photo.trim(); }
     });
     render();
-  }catch(e){ console.log('Sheet 讀取略過�
+  }catch(e){ console.log('Sheet 讀取略過：',e); }
+}
+
+/* ---- 深連結 ?d=DD：已解鎖則自動捲動展開，未解鎖則正常顯示 ---- */
+function handleDeepLink(){
+  const p = new URLSearchParams(window.location.search);
+  const dParam = p.get('d');
+  if(!dParam) return;
+  const dNum = parseInt(dParam, 10);
+  const targetDay = DAYS.find(dy => dy.d === dNum);
+  if(!targetDay) return;
+  if(nowMs() < unlockMs(targetDay)) return;
+
+  const allCards = document.querySelectorAll('#cards .day');
+  const idx = DAYS.indexOf(targetDay);
+  if(idx < 0 || idx >= allCards.length) return;
+
+  const card = allCards[idx];
+  const panel = card.querySelector('.panel');
+  const head  = card.querySelector('.head');
+  if(!panel) return;
+
+  if(!panel.classList.contains('open')){
+    panel.classList.add('open');
+    const chev = head.querySelector('.chev');
+    if(chev) chev.textContent = '⌃';
+    setTimeout(()=>{
+      const inner = panel.querySelector('.panel-inner');
+      if(inner){ inner.classList.remove('reveal'); void inner.offsetWidth; inner.classList.add('reveal'); }
+      card.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 150);
+  } else {
+    setTimeout(()=> card.scrollIntoView({behavior:'smooth', block:'start'}), 150);
+  }
+}
+
+async function init(){
+  buildSim();
+  render();
+  await loadSheet();
+  handleDeepLink();
+}
+init();
+</script>
