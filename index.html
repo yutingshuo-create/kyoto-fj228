@@ -9,7 +9,14 @@
                        留空字串就只用預先寫好的內容。
      解鎖規則：每天「台灣時間早上 8:00」開新的一張。
      ============================================================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js">
+function toggleHowto(){
+  const t = document.getElementById('howtoToggle');
+  const b = document.getElementById('howtoBody');
+  const open = b.classList.toggle('open');
+  t.classList.toggle('open', open);
+}
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700;900&family=Caveat:wght@500;700&family=Zhi+Mang+Xing&family=JetBrains+Mono:wght@400&display=swap');
 
@@ -177,6 +184,33 @@
   .promise p{font-size:13px;color:var(--teal2);line-height:1.7;}
   .promise .names{font-family:'Playfair Display',serif;margin-top:10px;font-size:14px;color:var(--teal);}
 
+
+  /* ---- 使用說明欄 ---- */
+  .howto{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    margin-bottom:18px;overflow:hidden;
+  }
+  .howto-toggle{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 16px;cursor:pointer;user-select:none;
+    font-size:13px;font-weight:700;color:var(--teal);
+  }
+  .howto-toggle .icon{font-size:16px;}
+  .howto-toggle .arr{color:var(--teal2);font-size:15px;transition:transform .3s;}
+  .howto-toggle.open .arr{transform:rotate(180deg);}
+  .howto-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+  .howto-body.open{max-height:400px;}
+  .howto-body ul{
+    list-style:none;padding:0 16px 14px;margin:0;
+    border-top:1px solid var(--line);
+  }
+  .howto-body li{
+    display:flex;align-items:flex-start;gap:9px;
+    padding:8px 0;font-size:13px;color:var(--ink);line-height:1.6;
+    border-bottom:1px solid var(--line);
+  }
+  .howto-body li:last-child{border-bottom:none;}
+  .howto-body li .em{flex:0 0 22px;text-align:center;font-size:15px;}
   footer{text-align:center;color:#b3a98f;font-size:11px;margin-top:26px;font-family:'JetBrains Mono';letter-spacing:1px;}
 </style>
 
@@ -187,6 +221,21 @@
     <div class="meta">FLIGHT FJ228 · SEAT 4A · 07/02 — 07/11</div>
   </div>
 
+
+  <div class="howto">
+    <div class="howto-toggle" id="howtoToggle" onclick="toggleHowto()">
+      <span><span class="icon">✈</span> 怎麼使用這個頁面？</span>
+      <span class="arr">⌄</span>
+    </div>
+    <div class="howto-body" id="howtoBody">
+      <ul>
+        <li><span class="em">🕗</span><span><b>每天早上 8:00（台灣時間）</b>自動解鎖當天的卡片，點開就能看到我當天的照片和留言。</span></li>
+        <li><span class="em">🔒</span><span>還沒到的日子會顯示封緘中，點它會抖一下跟妳說「還沒到喔」。</span></li>
+        <li><span class="em">📖</span><span>已經解鎖的卡片可以<b>往上翻回去</b>重看，不會消失。</span></li>
+        <li><span class="em">📷</span><span>每天的照片和留言我會在當天晚上前更新，重新整理頁面就會出現。</span></li>
+      </ul>
+    </div>
+  </div>
   <div id="previewBar" class="preview-bar">
     <div class="row">
       <b>🔧 預覽模式</b>
@@ -444,4 +493,11 @@ async function init(){
   handleDeepLink();
 }
 init();
+
+function toggleHowto(){
+  const t = document.getElementById('howtoToggle');
+  const b = document.getElementById('howtoBody');
+  const open = b.classList.toggle('open');
+  t.classList.toggle('open', open);
+}
 </script>
