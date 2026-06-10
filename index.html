@@ -7,7 +7,7 @@
                        上架給女友前改成 false。
        SHEET_CSV_URL : 之後接 Google 試算表時，把發布的 CSV 連結貼進來。
                        留空字串就只用預先寫好的內容。
-     解鎖規則：每天「台灣f��間早上 8:00」開新的一張。
+     解鎖規則：每天「台灣時間早上 8:00」開新的一張。
      ============================================================ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
@@ -208,7 +208,7 @@ function toggleHowto(){
   }
   /* ── carousel ── */
   .carousel{position:relative;overflow:hidden;border-radius:12px;background:#ede8e0;line-height:0;margin:12px 0;}
-  .car-stripxdisplay:flex;transition:transform .35s ease;}
+  .car-strip{display:flex;transition:transform .35s ease;}
   .car-strip img{flex:0 0 100%;width:100%;max-height:290px;object-fit:cover;}
   .car-dots{display:flex;justify-content:center;gap:7px;padding:8px 0 4px;line-height:1;}
   .car-dots span{display:inline-block;width:7px;height:7px;border-radius:50%;
@@ -313,7 +313,7 @@ function toggleHowto(){
       </ul>
     </div>
   </div>
-  <div id="previewBar" class="preview-bar">
+  <div id="previewBar" class="preview-bar" style="display:none">
     <div class="row">
       <b>🔧 預覽模式</b>
       <span>模擬今天是：</span>
@@ -341,7 +341,7 @@ const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoLHv9EJ
 const TRIP_YEAR = 2026, TRIP_MONTH = 7; // 七月
 /* ================================================== */
 
-/* 每日資料：note 與 photo 是「預先寫好」的佔位，
+/* 每日資料：note 袇 photo 是「預先寫好」的佔位，
    之後你可在 Google 試算表用同樣日期覆蓋。手寫句子請自行替換。 */
 const DAYS = [
   { d:2,  wd:"四", route:"台北 → 京都  TPE→KIX", title:"出發・抵達京都",
@@ -352,7 +352,7 @@ const DAYS = [
     full:["01:30 機場接送出發","06:40 起飛 IT210","10:25 抵達關西機場","12:25 JR HARUKA 前往京都","13:40 京都車站 拉麵小路 午餐","15:00 入住 Rihga Gran Kyoto","晚餐 馬耳東風／串くら"] },
 
   { d:3,  wd:"五", route:"京都 → 伊根", title:"伊根舟屋",
-    spots:["伊根灣遊覽船","向井酒造・伊根滿開","舟屋海岸散步","舟屋の里展望台"],
+    spots:["伊根灣遊覽船","向井酒造・伊根滿開","舟屋海岸散步","舟屋のꇌ展望台"],
     hl:"住進一樓停船、二樓住人的江戶時代水上舟屋。",
     dinner:"御食事処 兵四樓", by:"阿說",
     note:"舟屋蓋在海上，妳一定會喜歡。下次帶妳來。", photo:"",
@@ -374,7 +374,7 @@ const DAYS = [
 
   { d:6,  wd:"一", route:"彥根 → 近江八幡 → 大津", title:"彥根城・近江八幡",
     spots:["彥根城（國寶天守）","八幡山城纜車","La Collina（年輪蛋糕）","八幡堀","琵琶湖畔夕陽"],
-    hl:"日本僅存四座國寶城之一，登天守看琵琶湖。",
+    hl:"日本僅存四座國寶城之一，四���守看琵琶湖。",
     dinner:"近江什錦麵／德國餐廳（湖景）", by:"阿說",
     note:"在琵琶湖邊看夕陽，旁邊空著一個位子。", photo:"",
     full:["08:40 彥根城＋玄宮園","11:00 日牟禮八幡宮","11:40 八幡山城纜車","近江牛 千成亭 午餐","13:10 La Collina（現烤年輪蛋糕）","14:10 八幡堀散策","16:20 入住 大津琵琶湖王子酒店","琵琶湖畔夕陽","17:30 晚餐"] },
@@ -386,16 +386,16 @@ const DAYS = [
     note:"今天還車回京都，旅程過一半了，好快。", photo:"",
     full:["08:45 近江神宮（《花牌情緣》取景）","09:50 比叡山頂展望台（琵琶湖×京都）","10:15 延曆寺 根本中堂","11:30 峰道餐廳 午餐","12:35 橫川中堂","15:00 大原 三千院","15:30 寂光院","16:20 還車","17:40 回到京都 入住","晚餐 麵屋優光"] },
 
-  { d:8,  wd:"三", route:"京都 → 貴船 → 鞍馬", title:"貴船・鞍馬",
+  { d:8,  wd:"三", route:"京都 → 貴船 → 鞍馬", title:"貴船ヺi��馬",
     spots:["貴船神社（水占卜）","ひろ文 川床流水素麵","鞍馬寺（金剛床）","木の根道"],
     hl:"把御神籤泡進溪水，字才會慢慢浮出來。",
     dinner:"空蟬亭（被譽京都第一的炸豬排）", by:"阿說",
     note:"抽了一支水占籤，內容晚上電話跟妳說。", photo:"",
     full:["08:30 叡山電車一日券出發","09:40 ひろ文 流水素麵","12:00 貴船神社 水占卜","13:20 鞍馬纜車→鞍馬寺","14:30 木の根道・奧之院","16:00 叡電回出町柳","17:30 晚餐 空蟬亭（極難訂）"] },
 
-  { d:9,  wd:"四", route:"京都 東山一日", title:"清水寺ヷ祇園",
+  { d:9,  wd:"四", route:"京都 東山一日", title:"清水寺・祇園",
     spots:["清水寺（世界遺產）","三年坂・二年坂","八坂塔・八坂神社","花見小路"],
-    hl:"傍晚花見小路燈籠亮起，最有京都e��的時刻。",
+    hl:"傍晚花見小路燈籠亮起，最有京都味的時刻。",
     dinner:"燒肉飛鳥（和牛）", by:"阿說",
     note:"走在二年坂的時候想，以後一定要牽著妳走一次。", photo:"",
     full:["07:30 Inoda 咖啡 京之朝食","茶碗坂 → 清水寺","清水坂・產寧坂・二年坂","法觀寺 八坂塔","八坂神社","茶寮都路里 抹茶","傍晚 花見小路","17:30 晚餐 燒肉飛鳥"] },
@@ -409,7 +409,7 @@ const DAYS = [
 
   { d:11, wd:"六", route:"京都 → 關西機場 → 台北", title:"回家",
     spots:["JR HARUKA 往關西","關西機場・551 包子","起飛 IT211","回到妳身邊"],
-    hl:"回家了。下一趟，換我們一起飛。",
+    hl:"回家了。一趟，換我們一起飛。",
     dinner:"—", by:"阿說",
     note:"我回來了。謝謝妳陪我過完這十天。", photo:"",
     full:["06:30 退房","07:00 JR HARUKA 往關西機場","08:20 抵達關西機場 報到","08:40 551 包子 早午餐","11:15 起飛 IT211","13:10 抵達桃園","13:50 回家"] },
@@ -425,7 +425,8 @@ function nowMs(){ return PREVIEW_MODE ? simNowMs : Date.now(); }
 /* ---- 預覽選單 ---- */
 function buildSim(){
   const bar = document.getElementById('previewBar');
-  if(!PREVIEW_MODE){ bar.style.display='none'; return; }
+  if(!PREVIEW_MODE){ return; }
+  bar.style.display='flex';
   const sel = document.getElementById('simSelect');
   const opts = [{t:"行前（還沒開放）",ms:Date.UTC(TRIP_YEAR,TRIP_MONTH-1,1,0,0,0)}];
   DAYS.forEach(dy=>opts.push({t:`07/${String(dy.d).padStart(2,'0')}（週${dy.wd}）`,ms:unlockMs(dy)}));
@@ -508,7 +509,7 @@ function render(){
   if(todayIdx===-1){
     const days = Math.ceil((unlockMs(DAYS[0])-now)/86400000);
     const cd=document.createElement('div');cd.className='countdown';
-    cd.innerHTML=`<div class="big">${days>0?days:0}</div><div class="t">天後出發 · 7/2 早上 8:00，第一張就會打開 ♡</div>`;
+    cd.innerHTML=`<div class="big">${days>0?days:0}</div><div class="t">天後出發 · 7/2 早上 8:00，第$��張就會打開 ♡</div>`;
     root.appendChild(cd);
   }
 
@@ -569,14 +570,14 @@ function render(){
         panel.classList.add('open');head.querySelector('.chev').textContent='⌃';
         setTimeout(()=>{const inner=panel.querySelector('.panel-inner');inner.classList.add('reveal');initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]);},80);
       }
-      else {
+    } else {
       head.addEventListener('click',()=>{card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),420);});
     }
     root.appendChild(card);
   });
 }
 
-/* ---- 選配：讀 Google 表覆蓋 note / photo ---- */
+/* ---- 選配：讀 Google 試算表覆蓋 note / photo ---- */
 async function loadSheet(){
   if(!SHEET_CSV_URL) return;
   try{
@@ -637,6 +638,4 @@ function toggleHowto(){
   const t = document.getElementById('howtoToggle');
   const b = document.getElementById('howtoBody');
   const open = b.classList.toggle('open');
-  t.classList.toggle('open', open);
-}
-</script>
+  t.classList.toggle('ope
