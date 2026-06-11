@@ -121,7 +121,7 @@ function toggleHowto(){
   .preview-bar .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .preview-bar b{color:#e9c885;}
   .preview-bar select{
-    font-family:inherit;font-size:13px;padding:5px 8px;border-radius;8px;border:none;background:#f3ead9;color:#33505c;font-weight:700;
+    font-family:inherit;font-size:13px;padding:5px 8px;border-radius:8px;border:none;background:#f3ead9;color:#33505c;font-weight:700;
   }
   .preview-bar .note{color:#bcd0d4;font-size:11px;line-height:1.6;}
 
@@ -161,7 +161,7 @@ function toggleHowto(){
   /* 配色輪替 */
   .day.c1 .stub{background:#7da894;}
   .day.c2 .stub{background:#5d7d86;}
-  .day.c3 .stub;background:#c8a35c;}
+  .day.c3 .stub{background:#c8a35c;}
   .day.c4 .stub{background:#9c8aa5;}
 
   /* 今天 */
@@ -175,7 +175,7 @@ function toggleHowto(){
   .day.locked .stub .dd,.day.locked .stub .dn,.day.locked .stub .wd{opacity:.55;}
   .day.locked .title{color:var(--locked-ink);}
   .day.locked .route{color:#b3aa97;}
-  .day.locked .tag{background:#cabfa8;color:#fff;}
+  .day.locked .tag{background:#cabf a8;color:#fff;}
   .day.locked .head{cursor:default;}
   .day.locked .lockmsg{font-size:12px;color:var(--locked-ink);}
   .day.shake{animation:shake .4s;}
@@ -194,7 +194,9 @@ function toggleHowto(){
   @keyframes rise{to{opacity:1;transform:none}}
 
   .spots{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 12px;}
-  .spots span{background:#efe7d6;color:var(--teal);font-size:12.5px;padding:4px 10px;border-radius:20px;}
+  .spots span{background:#efe7d6;color:var(--teal);font-size:12.5px;padding:4px 10px;border-radius:20px;cursor:pointer;transition:background .18s,color .18s,transform .12s;}
+  .spots span:hover{background:var(--teal2);color:#fff;transform:translateY(-1px);}
+  .spots span.sp-active{background:var(--teal);color:#fff;}
   .hl{
     border-left:3px solid var(--sage);background:#f1f5f1;padding:9px 12px;border-radius:0 8px 8px 0;
     font-size:14px;color:var(--ink);line-height:1.7;margin-bottom:12px;
@@ -346,6 +348,12 @@ const TRIP_YEAR = 2026, TRIP_MONTH = 7; // 七月
 const DAYS = [
   { d:2,  wd:"四", route:"台北 → 京都  TPE→KIX", title:"出發・抵達京都",
     spots:["關西機場 入境","JR HARUKA 直達","京都車站・拉麵小路","入住 Rihga Gran Kyoto"],
+    spotDesc:[
+      "關西最大國際機場，入境後可在 T1 購 ICOCA 卡與 HARUKA 票，出閘門往右走即是 JR 售票處。",
+      "機場直達京都駅的特急列車，無需換車，車程約 75 分鐘，座位寬敞附行李架，每小時穩定班次。",
+      "京都駅 10F 的拉麵主題街，匯集博多、札幌等全國知名品牌，長途飛行後的第一餐最療癒。",
+      "京都駅正上方高層酒店，辦完入住走出門就在車站，是 10 天行程最便利的起點。"
+    ],
     hl:"凌晨就出門，飛了一整天，終於踏進京都。",
     dinner:"馬耳東風・串くら（道地居酒屋）", by:"阿說",
     note:"終於出發了。第一個晚上就好想妳。", photo:"",
@@ -353,6 +361,12 @@ const DAYS = [
 
   { d:3,  wd:"五", route:"京都 → 伊根", title:"伊根舟屋",
     spots:["伊根灣遊覽船","向井酒造・伊根滿開","舟屋海岸散步","舟屋の里展望台"],
+    spotDesc:[
+      "從海面欣賞 230 棟連排舟屋，船上可購餌直接餵食緊跟的海鷗，視角與陸上截然不同。",
+      "使用紅米釀造的粉紅清酒「伊根滿開」，全日本唯一，酒廠就在舟屋群中，可現場試飲購買。",
+      "穿梭舟屋之間的窄道，一樓停船、二樓住人的構造緊鄰海面，江戶時代就存在的漁村型態至今完整保存。",
+      "俯瞰整個伊根灣的最佳制高點，230 棟舟屋沿岸延伸的全景是日本少見的漁村絕景。"
+    ],
     hl:"住進一樓停船、二樓住人的江戶時代水上舟屋。",
     dinner:"御食事処 兵四樓", by:"阿說",
     note:"舟屋蓋在海上，妳一定會喜歡。下次帶妳來。", photo:"",
@@ -360,6 +374,12 @@ const DAYS = [
 
   { d:4,  wd:"六", route:"伊根 → 天橋立 → 舞鶴", title:"天橋立・舞鶴",
     spots:["天橋立 View Land（飛龍觀）","天橋立沙洲","由良川鐵橋（神隱少女）","五老岳公園"],
+    spotDesc:[
+      "搭纜車到山頂展望台，必須從跨下倒頭看，砂洲才會呈現離地騰空的飛龍形象，這個動作叫「股覗き」。",
+      "長 3.6 公里的松樹砂洲橫貫宮津灣，可騎自行車或徒步穿越，日本三景之一，海風與松香同時撲面。",
+      "《神隱少女》中千尋搭電車過海的場景原型，紅色鐵橋跨越由良川出海口，電影裡那個鏡頭幾乎一比一重現。",
+      "標高 301 公尺，號稱「近畿百景第一」，可同時俯瞰舞鶴灣與若狹灣，視野全開 360 度無遮擋。"
+    ],
     hl:"從跨下倒看天橋立，海與天顛倒，像龍在飛。",
     dinner:"魚源／海望亭（舞鶴海鮮）", by:"阿說",
     note:"海上有一條松樹做的橋，我替妳走了一遍。", photo:"",
@@ -367,6 +387,12 @@ const DAYS = [
 
   { d:5,  wd:"日", route:"舞鶴 → 美山 → 琵琶湖 → 彥根", title:"美山・白鬚神社",
     spots:["美山茅葺之里","白鬚神社（湖中鳥居）","水杉林蔭大道","長濱黑壁廣場"],
+    spotDesc:[
+      "保存完整的江戶時代茅草屋聚落，38 棟茅葺民家散落山谷間，周邊無現代建築干擾，是日本現存最完整的農村景觀之一。",
+      "紅色大鳥居屹立琵琶湖水中，稱為「近江的嚴島神社」，清晨湖面平靜時鳥居倒影最清晰，漁船從旁駛過時特別美。",
+      "長達 2.4 公里的水杉並木道，夏日濃蔭蔽日，騎自行車穿越最舒服，秋季轉橙紅時是全國知名攝影聖地。",
+      "以黑色外牆玻璃館著稱的明治時代街區，聚集玻璃藝品店與古董舖，是琵琶湖北岸最有氛圍的老街區。"
+    ],
     hl:"白鬚神社的紅鳥居立在琵琶湖中，人稱「近江的嚴島」。",
     dinner:"近江牛饗宴（彥根）", by:"阿說",
     note:"湖裡的紅鳥居好美，拍了好多張想給妳看。", photo:"",
@@ -374,6 +400,13 @@ const DAYS = [
 
   { d:6,  wd:"一", route:"彥根 → 近江八幡 → 大津", title:"彥根城・近江八幡",
     spots:["彥根城（國寶天守）","八幡山城纜車","La Collina（年輪蛋糕）","八幡堀","琵琶湖畔夕陽"],
+    spotDesc:[
+      "日本現存四座國寶城之一，天守建於 1622 年，登頂俯瞰整片琵琶湖，附設玄宮庭園為江戶時代迴遊式名園。",
+      "搭纜車登上豐臣秀次所建八幡山城遺址，俯瞰近江八幡水鄉與棋盤街道格局，山頂有村雲御所瑞龍寺。",
+      "近江八幡名店，茅草屋頂主建築是 IG 熱點，招牌年輪蛋糕與最中現烤供應，排隊但值得。",
+      "江戶時代的護城河水道，兩岸白壁土藏林立，數十部 NHK 時代劇取景地，春天河岸滿開櫻花。",
+      "大津湖畔的開闊黃昏，日本最大湖的夕陽視野無遮擋，天空橙紅倒映在湖面，整趟旅程最值得等待的一幕。"
+    ],
     hl:"日本僅存四座國寶城之一，登天守看琵琶湖。",
     dinner:"近江什錦麵／德國餐廳（湖景）", by:"阿說",
     note:"在琵琶湖邊看夕陽，旁邊空著一個位子。", photo:"",
@@ -381,6 +414,12 @@ const DAYS = [
 
   { d:7,  wd:"二", route:"大津 → 比叡山 → 大原 → 京都", title:"比叡山・延曆寺",
     spots:["近江神宮（花牌情緣）","比叡山頂展望台","延曆寺（不滅法燈）","大原 三千院・寂光院"],
+    spotDesc:[
+      "《花牌情緣》主角練習競技花牌的聖地，每年全國錦標賽在此舉行，正殿莊嚴靜謐，漫畫迷朝聖必訪。",
+      "海拔 848 公尺，晴天可同時將京都盆地與琵琶湖收進一個鏡頭，是兩地唯一共框的制高點，清晨常有雲海。",
+      "788 年傳教大師最澄開山，主殿「不滅法燈」自平安時代燃燒至今逾 1200 年，全山列入聯合國世界遺產。",
+      "京都北郊山間古寺群，三千院以苔庭與阿彌陀三尊聞名；寂光院是《平家物語》建禮門院終老之處，各有滄桑。"
+    ],
     hl:"延曆寺燃了 1200 年不滅的法燈，今天還在燒著。",
     dinner:"麵屋優光（貝類醬油拉麵）", by:"阿說",
     note:"今天還車回京都，旅程過一半了，好快。", photo:"",
@@ -388,6 +427,12 @@ const DAYS = [
 
   { d:8,  wd:"三", route:"京都 → 貴船 → 鞍馬", title:"貴船・鞍馬",
     spots:["貴船神社（水占卜）","ひろ文 川床流水素麵","鞍馬寺（金剛床）","木の根道"],
+    spotDesc:[
+      "祭祀水神的古社，「水占卜」需將御神籤放入清流才能看字，為京都最具神秘感的戀愛能量景點之一。",
+      "夏季限定，坐在貴船川溪畔架設的川床上，托竹管從上游送來的流水素麵撈起即食，京都七月最代表性的時令體驗。",
+      "傳說天狗修行之地，本殿前六芒星「金剛床」被認為是宇宙能量匯聚點，登山過程本身就充滿臨場感。",
+      "鞍馬山因岩盤堅硬樹根無法往下生長，全部裸露地面形成天然迷宮步道，是最像宮崎駿電影場景的地方。"
+    ],
     hl:"把御神籤泡進溪水，字才會慢慢浮出來。",
     dinner:"空蟬亭（被譽京都第一的炸豬排）", by:"阿說",
     note:"抽了一支水占籤，內容晚上電話跟妳說。", photo:"",
@@ -395,6 +440,12 @@ const DAYS = [
 
   { d:9,  wd:"四", route:"京都 東山一日", title:"清水寺・祇園",
     spots:["清水寺（世界遺產）","三年坂・二年坂","八坂塔・八坂神社","花見小路"],
+    spotDesc:[
+      "778 年建立，「清水舞台」以 139 根巨柱不用一根釘子撐起懸空舞台，俯瞰京都市區，列聯合國世界遺產。",
+      "通往清水寺的石板坡道，集中抹茶甜品、工藝品、和服租借店，是京都最精華的散步購物路線。",
+      "法觀寺五重塔高 46 公尺為東山最具辨識度的地標；八坂神社是祇園祭主辦神社，境內全年祭典不斷。",
+      "祇園花街核心，百年茶屋建築夾道，傍晚燈籠亮起後有機會目睹舞妓往返各茶屋，是京都最有畫面感的街道。"
+    ],
     hl:"傍晚花見小路燈籠亮起，最有京都味的時刻。",
     dinner:"燒肉飛鳥（和牛）", by:"阿說",
     note:"走在二年坂的時候想，以後一定要牽著妳走一次。", photo:"",
@@ -402,6 +453,13 @@ const DAYS = [
 
   { d:10, wd:"五", route:"京都 → 宇治 → 京都", title:"宇治・錦市場",
     spots:["中村藤吉（抹茶）","平等院（十円硬幣）","錦市場","南禪寺","鴨川・先斗町"],
+    spotDesc:[
+      "宇治百年老舖茶商，抹茶生茶凍與抹茶聖代是招牌，本店為古民家改建，建議提前網路候位避免等太久。",
+      "1052 年藤原頼通建造，鳳凰堂為日本十円硬幣背面圖案，池泉倒影如畫，列聯合國世界遺產。",
+      "綿延 390 公尺的室內市場，130 家以上攤位賣漬物、豆腐、海鮮與各式熟食，稱為「京都的廚房」。",
+      "京都禪宗最高位階寺院，三門高 22 公尺氣勢雄偉，境內有明治時代磚造水道閣橋，古典與近代並立。",
+      "沿鴨川河岸夏季架設川床；先斗町是窄巷裡密集的居酒屋與割烹，是京都最道地的夜食聖地。"
+    ],
     hl:"平等院鳳凰堂，就是十円硬幣背面那個。",
     dinner:"天婦羅 Makino（天丼）", by:"阿說",
     note:"最後一個完整的一天，買了點東西想帶回去給妳。", photo:"",
@@ -409,6 +467,12 @@ const DAYS = [
 
   { d:11, wd:"六", route:"京都 → 關西機場 → 台北", title:"回家",
     spots:["JR HARUKA 往關西","關西機場・551 包子","起飛 IT211","回到妳身邊"],
+    spotDesc:[
+      "京都駅直通關西機場的特急，無需換車，車程約 75 分鐘，指定席建議提前購買。",
+      "551 蓬萊豬肉包是大阪最具代表性的伴手禮，機場分店排隊約 10–20 分鐘，現蒸的最好吃。",
+      "台灣虎航直飛桃園，約 3 小時航程，到台灣時間約下午。",
+      "回家了。"
+    ],
     hl:"回家了。下一趟，換我們一起飛。",
     dinner:"—", by:"阿說",
     note:"我回來了。謝謝妳陪我過完這十天。", photo:"",
@@ -438,17 +502,18 @@ function buildSim(){
 const COLORS=["c1","c2","c3","c4"];
 
 /* ─── 各日路線座標 [lat, lng, "名稱"] ─── */
+/* DAY_WAYPOINTS 第四欄 true = 主要錨點（大標記），省略 = 次要（小標記） */
 const DAY_WAYPOINTS = {
-  2:  [[34.4341,135.2440,"關西機場"],[34.9858,135.7587,"京都駅"],[34.9878,135.7543,"Rihga Gran Kyoto"]],
-  3:  [[34.9858,135.7587,"京都取車"],[35.5461,135.1838,"天橋立"],[35.6816,135.2901,"向井酒造"],[35.6855,135.2923,"伊根灣遊覽船"],[35.6938,135.2919,"舟屋展望台"]],
-  4:  [[35.6855,135.2923,"伊根"],[35.5461,135.1838,"天橋立 View Land"],[35.4969,135.1896,"由良川鐵橋"],[35.4677,135.3693,"五老岳公園"],[35.4720,135.3700,"舞鶴住宿"]],
-  5:  [[35.3706,135.5895,"美山茅葺之里"],[35.3696,135.9868,"白鬚神社"],[35.3866,136.0723,"水杉林蔭大道"],[35.3722,136.2682,"長濱黑壁廣場"],[35.2762,136.2605,"彥根住宿"]],
-  6:  [[35.2758,136.2607,"彥根城"],[35.1355,136.1001,"日牟禮八幡宮"],[35.1210,136.1067,"La Collina"],[35.1324,136.0993,"八幡堀"],[35.0100,135.8683,"大津住宿"]],
-  7:  [[35.0286,135.8482,"近江神宮"],[35.0603,135.8409,"比叡山頂"],[35.0600,135.8410,"延曆寺"],[35.1180,135.7665,"三千院"],[35.1205,135.7604,"寂光院"],[34.9858,135.7587,"回京都"]],
-  8:  [[35.0363,135.7754,"出町柳"],[35.1261,135.7589,"ひろ文流水素麵"],[35.1235,135.7560,"貴船神社"],[35.1267,135.7665,"鞍馬寺"],[35.1280,135.7700,"木の根道"]],
-  9:  [[35.0073,135.7624,"Inoda 咖啡"],[34.9949,135.7851,"清水寺"],[34.9990,135.7836,"二年坂"],[35.0026,135.7810,"八坂塔"],[35.0036,135.7780,"八坂神社"],[35.0040,135.7750,"花見小路"]],
-  10: [[34.8882,135.7997,"中村藤吉・宇治"],[34.8884,135.8077,"平等院"],[35.0043,135.7661,"錦市場"],[35.0113,135.7923,"南禪寺"],[35.0097,135.7729,"先斗町"]],
-  11: [[34.9858,135.7587,"京都駅"],[34.4341,135.2440,"關西機場"]]
+  2:  [[34.4341,135.2440,"關西機場",true],[34.9858,135.7587,"京都駅",true],[34.9878,135.7543,"Rihga Gran Kyoto"]],
+  3:  [[34.9858,135.7587,"京都取車",true],[35.5461,135.1838,"天橋立"],[35.6816,135.2901,"向井酒造"],[35.6855,135.2923,"伊根灣遊覽船",true],[35.6938,135.2919,"舟屋展望台"]],
+  4:  [[35.6855,135.2923,"伊根",true],[35.5461,135.1838,"天橋立 View Land",true],[35.4969,135.1896,"由良川鐵橋"],[35.4677,135.3693,"五老岳公園"],[35.4720,135.3700,"舞鶴住宿",true]],
+  5:  [[35.3706,135.5895,"美山茅葺之里",true],[35.3696,135.9868,"白鬚神社",true],[35.3866,136.0723,"水杉林蔭大道"],[35.3722,136.2682,"長濱黑壁廣場"],[35.2762,136.2605,"彥根住宿",true]],
+  6:  [[35.2758,136.2607,"彥根城",true],[35.1355,136.1001,"日牟禮八幡宮"],[35.1210,136.1067,"La Collina"],[35.1324,136.0993,"八幡堀"],[35.0100,135.8683,"大津住宿",true]],
+  7:  [[35.0286,135.8482,"近江神宮",true],[35.0603,135.8409,"比叡山頂",true],[35.0600,135.8410,"延曆寺",true],[35.1180,135.7665,"三千院"],[35.1205,135.7604,"寂光院"],[34.9858,135.7587,"回京都",true]],
+  8:  [[35.0363,135.7754,"出町柳",true],[35.1261,135.7589,"ひろ文流水素麵",true],[35.1235,135.7560,"貴船神社",true],[35.1267,135.7665,"鞍馬寺"],[35.1280,135.7700,"木の根道"]],
+  9:  [[35.0073,135.7624,"Inoda 咖啡"],[34.9949,135.7851,"清水寺",true],[34.9990,135.7836,"二年坂"],[35.0026,135.7810,"八坂塔"],[35.0036,135.7780,"八坂神社"],[35.0040,135.7750,"花見小路",true]],
+  10: [[34.8882,135.7997,"中村藤吉・宇治",true],[34.8884,135.8077,"平等院",true],[35.0043,135.7661,"錦市場",true],[35.0113,135.7923,"南禪寺"],[35.0097,135.7729,"先斗町",true]],
+  11: [[34.9858,135.7587,"京都駅",true],[34.4341,135.2440,"關西機場",true]]
 };
 
 /* ─── 初始化地圖（在 card 打開後呼叫）─── */
@@ -469,11 +534,18 @@ function initDayMap(mapId, waypoints){
   // 路線折線
   L.polyline(latLngs,{color:'#5b8083',weight:3,opacity:.85,dashArray:'6,4'}).addTo(map);
 
-  // 景點數字標記
+  // 景點分層標記：主要錨點（w[3]=true）用大圓，次要用小點
   waypoints.forEach((w,i)=>{
+    const major = w[3] === true;
+    const size  = major ? 24 : 15;
+    const fs    = major ? 11 : 9;
+    const bg    = major ? '#5b8083' : '#8aabb0';
+    const bdr   = major ? '2px solid #fff' : '1.5px solid #fff';
+    const shadow= major ? '0 1px 4px rgba(0,0,0,.3)' : '0 1px 3px rgba(0,0,0,.2)';
+    const label = major ? (i+1) : '·';
     const ic = L.divIcon({
-      html:'<div style="background:#5b8083;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);line-height:1">'+(i+1)+'</div>',
-      className:'', iconSize:[22,22], iconAnchor:[11,11]
+      html:`<div style="background:${bg};color:#fff;border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-size:${fs}px;font-weight:700;border:${bdr};box-shadow:${shadow};line-height:1">${label}</div>`,
+      className:'', iconSize:[size,size], iconAnchor:[size/2,size/2]
     });
     L.marker([w[0],w[1]],{icon:ic})
       .bindTooltip(w[2],{permanent:false,direction:'top',className:'lf-tip'})
@@ -540,9 +612,9 @@ function render(){
       const photoHtml = buildPhotoHtml(dy.photo, i);
       panel.innerHTML = `
         <div class="panel-inner">
-          <div class="spots">${dy.spots.map(s=>`<span>${s}</span>`).join('')}</div>
+          <div class="spots">${dy.spots.map((s,si)=>`<span data-si="${si}">${s}</span>`).join('')}</div>
           <div id="map-${i}" class="day-map"></div>
-          <div class="hl">${dy.hl}</div>
+          <div class="hl" id="hl-${i}">${dy.hl}</div>
           ${photoHtml}
           <div class="note">${dy.note}<span class="by">— ${dy.by}</span></div>
           <div class="dinner">🍴 今晚：<b>${dy.dinner}</b></div>
@@ -565,6 +637,20 @@ function render(){
       const moreBtn=panel.querySelector('.more-btn');
       const full=panel.querySelector('.full');
       moreBtn.addEventListener('click',ev=>{ev.stopPropagation();const o=full.classList.toggle('open');moreBtn.textContent=o?'收起完整行程 ▴':'看完整行程 ▾';});
+
+      // 景點點擊換描述
+      const hlEl = panel.querySelector('.hl');
+      const defaultHl = dy.hl;
+      panel.querySelectorAll('.spots span').forEach(btn=>{
+        btn.addEventListener('click', ev=>{
+          ev.stopPropagation();
+          const si = Number(btn.dataset.si);
+          const desc = (dy.spotDesc && dy.spotDesc[si]) ? dy.spotDesc[si] : defaultHl;
+          panel.querySelectorAll('.spots span').forEach(b=>b.classList.remove('sp-active'));
+          btn.classList.add('sp-active');
+          hlEl.textContent = desc;
+        });
+      });
 
       if(isToday){ // 今天自動展開
         panel.classList.add('open');head.querySelector('.chev').textContent='⌃';
