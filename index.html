@@ -11,7 +11,10 @@
      ============================================================ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
 <script>
 /* ---- 輪播控制 ---- */
 /* ---- 照片 HTML 建構（支援多張輪播） ---- */
@@ -534,23 +537,29 @@ function initDayMap(mapId, waypoints){
   // 路線折線
   L.polyline(latLngs,{color:'#5b8083',weight:3,opacity:.85,dashArray:'6,4'}).addTo(map);
 
-  // 景點分層標記：主要錨點（w[3]=true）用大圓，次要用小點
-  waypoints.forEach((w,i)=>{
-    const major = w[3] === true;
-    const size  = major ? 24 : 15;
-    const fs    = major ? 11 : 9;
-    const bg    = major ? '#5b8083' : '#8aabb0';
-    const bdr   = major ? '2px solid #fff' : '1.5px solid #fff';
-    const shadow= major ? '0 1px 4px rgba(0,0,0,.3)' : '0 1px 3px rgba(0,0,0,.2)';
-    const label = major ? (i+1) : '·';
-    const ic = L.divIcon({
-      html:`<div style="background:${bg};color:#fff;border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-size:${fs}px;font-weight:700;border:${bdr};box-shadow:${shadow};line-height:1">${label}</div>`,
-      className:'', iconSize:[size,size], iconAnchor:[size/2,size/2]
-    });
-    L.marker([w[0],w[1]],{icon:ic})
-      .bindTooltip(w[2],{permanent:false,direction:'top',className:'lf-tip'})
-      .addTo(map);
+  // MarkerCluster：近的點自動縮成數字泡泡，點擊展開
+  const cluster = L.markerClusterGroup({
+    maxClusterRadius: 50,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    iconCreateFunction(c){
+      return L.divIcon({
+        html:`<div style="background:#5b8083;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">${c.getChildCount()}</div>`,
+        className:'', iconSize:[32,32], iconAnchor:[16,16]
+      });
+    }
   });
+  waypoints.forEach((w,i)=>{
+    const ic = L.divIcon({
+      html:`<div style="background:#5b8083;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);line-height:1">${i+1}</div>`,
+      className:'', iconSize:[22,22], iconAnchor:[11,11]
+    });
+    cluster.addLayer(
+      L.marker([w[0],w[1]],{icon:ic})
+        .bindTooltip(w[2],{permanent:false,direction:'top',className:'lf-tip'})
+    );
+  });
+  map.addLayer(cluster);  });
 
   map.fitBounds(L.latLngBounds(latLngs),{padding:[18,18]});
 
