@@ -336,7 +336,7 @@ function toggleHowto(){
 
 <script>
 /* ===================== 設定區 ===================== */
-const PREVIEW_MODE  = false;
+const PREVIEW_MODE  = new URLSearchParams(location.search).has('preview');
 const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRoLHv9EJ23jWx_2tSeOv29RXq8j6nvwhelGAlmfkgkPo-dDyMwI-FeCsvrswisEhM0M3QuyJAPGcmH/pub?gid=1387524135&single=true&output=csv";
 const TRIP_YEAR = 2026, TRIP_MONTH = 7; // 七月
 /* ================================================== */
