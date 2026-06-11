@@ -531,6 +531,7 @@ function initDayMap(mapId, waypoints){
     zoomControl:false, attributionControl:false,
     scrollWheelZoom:false, dragging:true, touchZoom:true
   });
+  el._leafletMap = map;
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
     {subdomains:'abcd'}).addTo(map);
 
@@ -641,7 +642,7 @@ function render(){
       head.addEventListener('click',()=>{
         const open=panel.classList.toggle('open');
         head.querySelector('.chev').textContent=open?'⌃':'⌄';
-        if(open){const inner=panel.querySelector('.panel-inner');inner.classList.remove('reveal');void inner.offsetWidth;inner.classList.add('reveal');setTimeout(()=>initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]),80);}
+        if(open){const inner=panel.querySelector('.panel-inner');inner.classList.remove('reveal');void inner.offsetWidth;inner.classList.add('reveal');setTimeout(()=>{initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]);setTimeout(()=>{const mel=document.getElementById('map-'+i);if(mel&&mel._leafletMap)mel._leafletMap.invalidateSize();},500);},80);}
       });
       const moreBtn=panel.querySelector('.more-btn');
       const full=panel.querySelector('.full');
@@ -663,7 +664,7 @@ function render(){
 
       if(isToday){ // 今天自動展開
         panel.classList.add('open');head.querySelector('.chev').textContent='⌃';
-        setTimeout(()=>{const inner=panel.querySelector('.panel-inner');inner.classList.add('reveal');initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]);},80);
+        setTimeout(()=>{const inner=panel.querySelector('.panel-inner');inner.classList.add('reveal');initDayMap('map-'+i,DAY_WAYPOINTS[dy.d]);setTimeout(()=>{const mel=document.getElementById('map-'+i);if(mel&&mel._leafletMap)mel._leafletMap.invalidateSize();},500);},80);
       }
     } else {
       head.addEventListener('click',()=>{card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),420);});
