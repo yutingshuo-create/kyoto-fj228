@@ -26,9 +26,9 @@ function buildPhotoHtml(photo, idx){
   var captions = entries.map(function(e){ var p=e.split('|'); return p.length>1?p[1].trim():''; });
   var hasCaption = captions.some(function(c){return c.length>0;});
   if(imgs.length === 1){
-    var sc = hasCaption && captions[0] ? '<div class="car-caption">'+captions[0]+'</div>' : '';
+    var sc = '';
     return sc
-      ? '<div class="photo-wrap"><img class="photo" src="'+imgs[0]+'" alt="">'+sc+'</div>'
+      ? '<img class="photo" src="'+imgs[0]+'" alt="">'
       : '<img class="photo" src="'+imgs[0]+'" alt="">';
   }
   var cid = 'car-' + idx;
@@ -45,7 +45,7 @@ function buildPhotoHtml(photo, idx){
     nav = '<div class="car-counter">1 / ' + imgs.length + '</div>';
   }
   var capData = hasCaption ? ' data-captions="' + captions.map(function(c){return c.replace(/"/g,'&quot;');}).join('||') + '"' : '';
-  var capHtml = hasCaption ? '<div class="car-caption">' + (captions[0]||'') + '</div>' : '';
+  var capHtml = '';
   return '<div class="photo-wrap">'
     + '<div class="carousel" id="' + cid + '" data-idx="0" data-len="' + imgs.length + '"' + capData + '>'
     + '<div class="car-strip">' + strips + '</div>'
@@ -66,13 +66,15 @@ function carGo(id,idx){
   if(counter){ counter.textContent=`${idx+1} / ${len}`; }
   else{ el.querySelectorAll('.car-dots span').forEach((d,i)=>d.classList.toggle('on',i===idx)); }
   el.dataset.idx=String(idx);
-  // 同步圖說
-  const wrap=el.closest('.photo-wrap');
-  const capEl=wrap?wrap.querySelector('.car-caption'):null;
-  if(capEl && el.dataset.captions){
+  // 切換照片時同步更新 note
+  if(el.dataset.captions){
     const caps=el.dataset.captions.split('||');
-    capEl.textContent=caps[idx]||'';
-    capEl.style.display=(caps[idx]&&caps[idx].trim())?'':'none';
+    const noteEl=el.closest('.panel-inner')&&el.closest('.panel-inner').querySelector('.note-text');
+    if(noteEl){
+      if(!noteEl.dataset.orig) noteEl.dataset.orig=noteEl.textContent;
+      const cap=caps[idx]&&caps[idx].trim();
+      noteEl.textContent=cap||noteEl.dataset.orig;
+    }
   }
 }
 function carStep(id,dir){
@@ -661,7 +663,7 @@ function render(){
           <div id="map-${i}" class="day-map"></div>
           <div class="hl" id="hl-${i}">${dy.hl}</div>
           ${photoHtml}
-          <div class="note">${dy.note}<span class="by">— ${dy.by}</span></div>
+          <div class="note"><span class="note-text">${dy.note}</span><span class="by">— ${dy.by}</span></div>
           <div class="dinner">🍴 今晚：<b>${dy.dinner}</b></div>
           <button class="more-btn">看完整行程 ▾</button>
           <div class="full"><ol>${dy.full.map(f=>`<li>${f}</li>`).join('')}</ol></div>
