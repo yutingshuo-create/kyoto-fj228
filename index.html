@@ -21,9 +21,16 @@
 function buildPhotoHtml(photo, idx){
   if(!photo || !photo.trim())
     return '<div class="photo-ph">📷<span>今天的照片晚點補上</span></div>';
-  var imgs = photo.split(',').map(function(s){return s.trim();}).filter(Boolean);
-  if(imgs.length === 1)
-    return '<img class="photo" src="' + imgs[0] + '" alt="">';
+  var entries = photo.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var imgs = entries.map(function(e){ return e.split('|')[0].trim(); });
+  var captions = entries.map(function(e){ var p=e.split('|'); return p.length>1?p[1].trim():''; });
+  var hasCaption = captions.some(function(c){return c.length>0;});
+  if(imgs.length === 1){
+    var sc = hasCaption && captions[0] ? '<div class="car-caption">'+captions[0]+'</div>' : '';
+    return sc
+      ? '<div class="photo-wrap"><img class="photo" src="'+imgs[0]+'" alt="">'+sc+'</div>'
+      : '<img class="photo" src="'+imgs[0]+'" alt="">';
+  }
   var cid = 'car-' + idx;
   var strips = '';
   for(var j=0;j<imgs.length;j++)
@@ -37,11 +44,16 @@ function buildPhotoHtml(photo, idx){
   } else {
     nav = '<div class="car-counter">1 / ' + imgs.length + '</div>';
   }
-  return '<div class="carousel" id="' + cid + '" data-idx="0" data-len="' + imgs.length + '">'
+  var capData = hasCaption ? ' data-captions="' + captions.map(function(c){return c.replace(/"/g,'&quot;');}).join('||') + '"' : '';
+  var capHtml = hasCaption ? '<div class="car-caption">' + (captions[0]||'') + '</div>' : '';
+  return '<div class="photo-wrap">'
+    + '<div class="carousel" id="' + cid + '" data-idx="0" data-len="' + imgs.length + '"' + capData + '>'
     + '<div class="car-strip">' + strips + '</div>'
     + '<button class="car-arr prev" onclick="carStep(\'' + cid + '\',-1)">&#8249;</button>'
     + '<button class="car-arr next" onclick="carStep(\'' + cid + '\',1)">&#8250;</button>'
     + nav
+    + '</div>'
+    + capHtml
     + '</div>';
 }
 
@@ -50,11 +62,18 @@ function carGo(id,idx){
   const len=parseInt(el.dataset.len);
   idx=Math.max(0,Math.min(len-1,idx));
   el.querySelector('.car-strip').style.transform=`translateX(-${idx*100}%)`;
-  // 4張以上顯示數字，否則顯示點點
   const counter=el.querySelector('.car-counter');
   if(counter){ counter.textContent=`${idx+1} / ${len}`; }
   else{ el.querySelectorAll('.car-dots span').forEach((d,i)=>d.classList.toggle('on',i===idx)); }
   el.dataset.idx=String(idx);
+  // 同步圖說
+  const wrap=el.closest('.photo-wrap');
+  const capEl=wrap?wrap.querySelector('.car-caption'):null;
+  if(capEl && el.dataset.captions){
+    const caps=el.dataset.captions.split('||');
+    capEl.textContent=caps[idx]||'';
+    capEl.style.display=(caps[idx]&&caps[idx].trim())?'':'none';
+  }
 }
 function carStep(id,dir){
   const el=document.getElementById(id);if(!el)return;
@@ -227,6 +246,11 @@ function toggleHowto(){
     display:flex;align-items:center;justify-content:center;}
   .car-arr.prev{left:6px;} .car-arr.next{right:6px;}
   .car-arr:hover{background:rgba(255,255,255,.85);}
+  .photo-wrap{margin:12px 0;}
+  .photo-wrap .carousel{margin:0;}
+  .car-caption{font-family:'Noto Serif TC',serif;font-size:13px;color:var(--teal2);
+    text-align:center;padding:7px 14px 9px;line-height:1.6;
+    background:#f0ebe1;border-radius:0 0 10px 10px;}
   .note{
     font-family:'Noto Serif TC',serif;font-size:17px;line-height:2;color:var(--teal);
     background:#fbf3e2;border:1px dashed var(--gold);border-radius:10px;padding:12px 14px;margin-bottom:8px;
