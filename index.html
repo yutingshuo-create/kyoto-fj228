@@ -66,14 +66,15 @@ function carGo(id,idx){
   if(counter){ counter.textContent=`${idx+1} / ${len}`; }
   else{ el.querySelectorAll('.car-dots span').forEach((d,i)=>d.classList.toggle('on',i===idx)); }
   el.dataset.idx=String(idx);
-  // 切換照片時同步更新 note
-  if(el.dataset.captions){
-    const caps=el.dataset.captions.split('||');
-    const noteEl=el.closest('.panel-inner')&&el.closest('.panel-inner').querySelector('.note-text');
-    if(noteEl){
-      if(!noteEl.dataset.orig) noteEl.dataset.orig=noteEl.textContent;
+  // 切換照片時同步更新 note（有圖說顯示圖說，否則清空）
+  const noteEl=el.closest('.panel-inner')&&el.closest('.panel-inner').querySelector('.note-text');
+  if(noteEl){
+    if(el.dataset.captions){
+      const caps=el.dataset.captions.split('||');
       const cap=caps[idx]&&caps[idx].trim();
       noteEl.textContent=cap||'';
+    } else {
+      noteEl.textContent='';
     }
   }
 }
