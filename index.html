@@ -73,7 +73,7 @@ function carGo(id,idx){
     if(noteEl){
       if(!noteEl.dataset.orig) noteEl.dataset.orig=noteEl.textContent;
       const cap=caps[idx]&&caps[idx].trim();
-      noteEl.textContent=cap||noteEl.dataset.orig;
+      noteEl.textContent=cap||'';
     }
   }
 }
